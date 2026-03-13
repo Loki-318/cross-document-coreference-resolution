@@ -3,6 +3,9 @@ import axios from 'axios';
 import './App.css';
 
 function App() {
+    // Use environment variable or default to current origin (allows non-localhost deployment)
+    const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    
     const [files, setFiles] = useState([]);
     const [result, setResult] = useState(null);
     const [filterOption, setFilterOption] = useState('author');
@@ -23,7 +26,7 @@ function App() {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/upload', formData, {
+            const response = await axios.post(`${API_BASE_URL}/upload`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
@@ -48,7 +51,7 @@ function App() {
         if (!result) return;
 
         try {
-            const response = await axios.post('http://localhost:5000/filter', {
+            const response = await axios.post(`${API_BASE_URL}/filter`, {
                 filterOption,
                 filterValue,
                 clusters: result.clusters,
@@ -117,7 +120,7 @@ function App() {
                             {Object.entries(filteredFiles).map(([filename, mentions], index) => (
                                 <li key={index}>
                                     <strong>
-                                        <a href={`http://localhost:5000/pdf/${filename}`} target="_blank" rel="noopener noreferrer">
+                                        <a href={`${API_BASE_URL}/pdf/${filename}`} target="_blank" rel="noopener noreferrer">
                                             {filename}
                                         </a>
                                     </strong>

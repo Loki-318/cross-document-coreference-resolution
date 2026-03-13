@@ -1,18 +1,68 @@
-# Ignore Python bytecode
+# ========================
+# Python
+# ========================
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+.python-version
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+dist/
+build/
+.eggs/
+*.egg-info/
 
-# Ignore virtual environment
+# ========================
+# Virtual Environments
+# ========================
+.venv/
 venv/
+env/
+ENV/
+cdcr_assignment/
 
-# Ignore environment variables
+# ========================
+# Environment Variables
+# ========================
 .env
+.env.*
 
-# Ignore logs
+# ========================
+# Flask / App Runtime
+# ========================
+instance/
+uploads/
 *.log
 
-# Ignore node_modules in the frontend directory
-frontend/node_modules/
+# ========================
+# Static (generated assets)
+# ========================
+static/
 
-# Ignore build output in the frontend directory
+# ========================
+# Frontend (React)
+# ========================
+frontend/node_modules/
 frontend/build/
+frontend/.cache/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+frontend/pnpm-debug.log*
+
+# ========================
+# OS / IDE
+# ========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

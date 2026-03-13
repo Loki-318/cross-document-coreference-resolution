@@ -28,6 +28,12 @@ def detect_mentions(text):
     return mentions
 
 def link_mentions(mentions):
+    # Handle edge cases: empty or too few mentions
+    if len(mentions) == 0:
+        return {}
+    if len(mentions) == 1:
+        return {'0': mentions}
+    
     vectorizer = TfidfVectorizer().fit_transform(mentions)
     vectors = vectorizer.toarray()
     clustering = AgglomerativeClustering(n_clusters=None, distance_threshold=1.5).fit(vectors)
@@ -40,11 +46,13 @@ def link_mentions(mentions):
     return clusters
 
 def process_file(file):
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    # Sanitize filename to prevent path traversal attacks
+    safe_filename = os.path.basename(file.filename)
+    file_path = os.path.join(UPLOAD_FOLDER, safe_filename)
     file.save(file_path)
     text = extract_text_from_pdf(file_path)
     mentions = detect_mentions(text)
-    return mentions, file.filename
+    return mentions, safe_filename
 
 @app.route('/upload', methods=['POST'])
 def upload_files():
@@ -68,10 +76,16 @@ def upload_files():
 @app.route('/filter', methods=['POST'])
 def filter_results():
     data = request.json
-    filter_option = data.get('filterOption')
-    filter_value = data.get('filterValue').lower()
-    clusters = data.get('clusters')
-    file_mentions = data.get('file_mentions')
+    if not data:
+        return jsonify({'error': 'No JSON data provided'}), 400
+    
+    filter_value = data.get('filterValue')
+    if not filter_value:
+        return jsonify({'error': 'filterValue is required'}), 400
+    
+    filter_value = filter_value.lower()
+    clusters = data.get('clusters', {})
+    file_mentions = data.get('file_mentions', {})
 
     filtered_mentions = []
     filtered_files = {}
